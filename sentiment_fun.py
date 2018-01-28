@@ -14,7 +14,21 @@ api = tweepy.API(auth)
 
 public_tweets = api.search('Trump')
 
+csv = 'tweet,label\n'
+
 for tweet in public_tweets:
-    print(tweet.text)
     analysis = TextBlob(tweet.text)
-    print(analysis.sentiment, '\n')
+    
+    label = 'neutral'
+    if analysis.sentiment.polarity > 0.2:
+        label = 'positive'
+    elif analysis.sentiment.polarity < -0.2:
+        label = 'negative'
+
+    csv += '"' + tweet.text + '",' + label + '\n'
+
+
+with open("output.csv","w") as text_file:
+    text_file.write(csv)
+
+print("Saves result int output.csv")
